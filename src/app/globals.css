@@ -1,0 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+:root {
+  --bg-primary: #080C14;
+  --bg-secondary: #0D1321;
+  --bg-card: rgba(15, 23, 42, 0.7);
+  --bg-card-hover: rgba(24, 33, 53, 0.85);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-focus: rgba(14, 165, 233, 0.6);
+  
+  --color-primary: #0EA5E9;
+  --color-primary-dark: #0284C7;
+  --color-teal: #14B8A6;
+  --color-emergency: #EF4444;
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: #F1F5F9;
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-image: 
+    radial-gradient(circle at 50% -20%, rgba(14, 165, 233, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 90% 90%, rgba(20, 184, 166, 0.04) 0%, transparent 40%);
+  background-attachment: fixed;
+}
+
+/* Custom delicate scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+/* Enterprise Clinical Surfaces */
+.glass-panel {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-subtle);
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05), 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+}
+
+.clinical-card {
+  background: #0D1322;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 0.875rem;
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.06), 0 4px 16px -2px rgba(0, 0, 0, 0.4);
+}
+
+.glass-panel-hover {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.glass-panel-hover:hover {
+  background: var(--bg-card-hover);
+  border-color: rgba(255, 255, 255, 0.14);
+  transform: translateY(-1px);
+}
+
+/* Subtle, authentic clinical glow */
+.glow-primary {
+  box-shadow: 0 0 25px -6px rgba(14, 165, 233, 0.25);
+}
+
+.glow-emergency {
+  box-shadow: 0 0 25px -6px rgba(239, 68, 68, 0.3);
+}
+
+/* Accessible focus ring */
+*:focus-visible {
+  outline: 2px solid #0EA5E9;
+  outline-offset: 2px;
+}
