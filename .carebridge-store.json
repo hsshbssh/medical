@@ -1,0 +1,320 @@
+{
+  "incidents": [
+    {
+      "id": "demo-incident-001",
+      "incident_id": "CB-20261024-A1B2",
+      "reporter_id": "demo-bystander-001",
+      "reporter_name": "Rahul Sharma",
+      "reporter_phone": "+91-9876543210",
+      "latitude": 28.6139,
+      "longitude": 77.209,
+      "location_address": "Connaught Place, New Delhi, Delhi 110001",
+      "location_description": "Near the central fountain at Gate 4",
+      "incident_time": "2026-10-24T10:30:00+05:30",
+      "category": "road_accident",
+      "description": "Two-wheeler collision with auto-rickshaw at the intersection. Rider appears to have injuries on left arm and knee.",
+      "injury_description": "Visible abrasion on left forearm, possible fracture suspected on left knee. Patient is conscious and alert.",
+      "observations": "Patient was wearing helmet. Bleeding has been controlled with a clean cloth. Patient is able to talk but in significant pain.",
+      "patient_identity_status": "not_verified",
+      "patient_name": "Unknown male",
+      "patient_age_approx": "25-30",
+      "patient_gender": "male",
+      "status": "acknowledged",
+      "routing_mode": "demo",
+      "data_sharing_confirmed": true,
+      "consent_timestamp": "2026-10-24T10:35:00+05:30",
+      "created_at": "2026-10-24T10:32:00+05:30",
+      "updated_at": "2026-10-24T10:45:00+05:30"
+    }
+  ],
+  "qrTokens": [
+    {
+      "id": "demo-qr-001",
+      "incident_id": "demo-incident-001",
+      "token_hash": "990391cfb4c366d08ee02f114f336881607456090f7239dbf1c065edd33a65d3",
+      "permitted_scope": [
+        "incident_summary",
+        "location",
+        "injury_description",
+        "patient_status"
+      ],
+      "expires_at": "2026-10-25T08:44:04.949Z",
+      "max_uses": 10,
+      "use_count": 2,
+      "status": "active",
+      "created_by": "demo-bystander-001",
+      "created_at": "2026-10-24T10:35:00+05:30"
+    },
+    {
+      "id": "demo-qr-002",
+      "incident_id": "demo-incident-001",
+      "token_hash": "402a836e28055d2348e818b5001a577bce5c8af46405a2489a12203449cd2043",
+      "permitted_scope": [
+        "incident_summary"
+      ],
+      "expires_at": "2026-10-23T10:35:00+05:30",
+      "max_uses": 5,
+      "use_count": 3,
+      "status": "expired",
+      "created_by": "demo-bystander-001",
+      "created_at": "2026-10-23T10:35:00+05:30"
+    },
+    {
+      "id": "demo-qr-003",
+      "incident_id": "demo-incident-001",
+      "token_hash": "1b33df472c69950f162e664f88ea11cd1034c547b9718111c111c60e03d3d469",
+      "permitted_scope": [
+        "incident_summary",
+        "location"
+      ],
+      "expires_at": "2026-10-25T08:44:04.949Z",
+      "revoked_at": "2026-10-24T11:00:00+05:30",
+      "max_uses": 10,
+      "use_count": 1,
+      "status": "revoked",
+      "created_by": "demo-bystander-001",
+      "created_at": "2026-10-24T09:00:00+05:30"
+    }
+  ],
+  "dispatches": [
+    {
+      "id": "demo-dispatch-001",
+      "incident_id": "demo-incident-001",
+      "facility_id": "demo-facility-001",
+      "status": "acknowledged",
+      "attempt_count": 1,
+      "distance_km": 5.2,
+      "dispatched_at": "2026-10-24T10:36:00+05:30",
+      "acknowledged_at": "2026-10-24T10:38:00+05:30",
+      "created_at": "2026-10-24T10:36:00+05:30",
+      "updated_at": "2026-10-24T10:38:00+05:30"
+    },
+    {
+      "id": "demo-dispatch-002",
+      "incident_id": "demo-incident-001",
+      "facility_id": "demo-facility-002",
+      "status": "sent",
+      "attempt_count": 1,
+      "distance_km": 5.4,
+      "dispatched_at": "2026-10-24T10:36:00+05:30",
+      "created_at": "2026-10-24T10:36:00+05:30",
+      "updated_at": "2026-10-24T10:36:00+05:30"
+    }
+  ],
+  "clinicianResponses": [
+    {
+      "id": "demo-response-001",
+      "incident_id": "demo-incident-001",
+      "clinician_id": "demo-clinician-001",
+      "clinician_name": "Dr. Meera Reddy",
+      "response_type": "initial_assessment",
+      "content": "Based on the reported injuries: visible abrasion on left forearm and possible fracture of left knee. Recommend immediate transport to nearest emergency facility.",
+      "clinical_notes": "Initial remote assessment based on bystander report. In-person evaluation required.",
+      "status": "approved",
+      "is_primary_responder": true,
+      "created_at": "2026-10-24T10:42:00+05:30",
+      "updated_at": "2026-10-24T10:45:00+05:30"
+    }
+  ],
+  "careInstructions": [
+    {
+      "id": "demo-instruction-001",
+      "incident_id": "demo-incident-001",
+      "patient_id": "demo-patient-001",
+      "original_text": "Post-initial assessment care: 1. Immobilize the left lower extremity using available splinting material. 2. Clean forearm abrasion with normal saline. 3. Monitor for compartment syndrome. 4. Tab. Paracetamol 500mg PO every 6 hours for pain, maximum 4 doses in 24 hours. 5. Apply ice pack to knee for 15-20 min every 2 hours. 6. Keep limb elevated. 7. Follow up at orthopedic OPD within 48 hours for X-ray review. 8. Return immediately if swelling, numbness, or fever.",
+      "simplified_text": "Your Care Instructions (Easy to understand):\n\n1. DO NOT move or put weight on your left leg — keep it still and supported.\n2. Clean the scrape on your left arm gently with clean water and cover it with a clean bandage.\n3. Watch for danger signs on your leg: more pain, skin turning pale/white, tingling or numbness.\n4. For pain: Take 1 Paracetamol tablet (500mg) every 6 hours. Do NOT take more than 4 tablets in one day.\n5. Put an ice pack (wrapped in cloth) on your knee for 15-20 minutes, then remove. Repeat every 2 hours.\n6. When resting, keep your leg raised higher than your chest (use pillows).\n7. IMPORTANT: Visit the bone specialist (Orthopedic) clinic within 2 days for an X-ray.\n8. Go to the hospital RIGHT AWAY if you notice: more swelling, numbness or tingling, fever, or the wound looks red/warm/has discharge.",
+      "simplified_text_hindi": "आपकी देखभाल के निर्देश (सरल भाषा में):\n\n1. अपने बाएं पैर पर वजन न डालें — इसे स्थिर और सहारा देकर रखें।\n2. बाएं हाथ की खरोंच को साफ पानी से धोएं और साफ पट्टी से ढकें।\n3. पैर पर खतरे के संकेत देखें: अधिक दर्द, त्वचा का पीला/सफेद होना, झुनझुनी या सुन्नपन।\n4. दर्द के लिए: हर 6 घंटे में 1 पैरासिटामोल टैबलेट (500mg) लें। एक दिन में 4 से अधिक गोलियां न लें।\n5. अपने घुटने पर आइस पैक (कपड़े में लपेटकर) 15-20 मिनट के लिए रखें, फिर हटाएं। हर 2 घंटे में दोहराएं।\n6. आराम करते समय अपने पैर को छाती से ऊपर रखें (तकिए का उपयोग करें)।\n7. महत्वपूर्ण: 2 दिनों के अंदर हड्डी विशेषज्ञ (ऑर्थोपेडिक) क्लिनिक में एक्स-रे के लिए जाएं।\n8. तुरंत अस्पताल जाएं अगर: अधिक सूजन, सुन्नपन या झुनझुनी, बुखार, या घाव लाल/गर्म दिखे या उसमें से कुछ निकले।",
+      "language": "en",
+      "checklist_items": [
+        {
+          "id": "cl-1",
+          "text": "Keep left leg immobilized",
+          "category": "Immediate",
+          "is_critical": true,
+          "is_completed": false
+        },
+        {
+          "id": "cl-2",
+          "text": "Clean and dress forearm wound",
+          "category": "Wound Care",
+          "is_critical": false,
+          "is_completed": true
+        },
+        {
+          "id": "cl-3",
+          "text": "Take Paracetamol 500mg (max 4/day)",
+          "category": "Medication",
+          "is_critical": true,
+          "is_completed": false
+        },
+        {
+          "id": "cl-4",
+          "text": "Apply ice to knee every 2 hours",
+          "category": "Treatment",
+          "is_critical": false,
+          "is_completed": false
+        },
+        {
+          "id": "cl-5",
+          "text": "Keep leg elevated when resting",
+          "category": "Treatment",
+          "is_critical": false,
+          "is_completed": false
+        },
+        {
+          "id": "cl-6",
+          "text": "Visit Orthopedic OPD within 48 hours",
+          "category": "Follow-up",
+          "is_critical": true,
+          "is_completed": false
+        },
+        {
+          "id": "cl-7",
+          "text": "Monitor for danger signs",
+          "category": "Safety",
+          "is_critical": true,
+          "is_completed": false
+        }
+      ],
+      "ai_model_used": "gemini-2.0-flash",
+      "approval_status": "approved",
+      "author_id": "demo-clinician-001",
+      "author_name": "Dr. Meera Reddy",
+      "reviewer_id": "demo-clinician-001",
+      "reviewer_name": "Dr. Meera Reddy",
+      "reviewed_at": "2026-10-24T11:00:00+05:30",
+      "version": 1,
+      "created_at": "2026-10-24T10:50:00+05:30",
+      "updated_at": "2026-10-24T11:00:00+05:30"
+    }
+  ],
+  "prescriptions": [
+    {
+      "id": "demo-prescription-001",
+      "incident_id": "demo-incident-001",
+      "clinician_response_id": "demo-response-001",
+      "prescriber_id": "demo-clinician-001",
+      "prescriber_name": "Dr. Meera Reddy",
+      "patient_id": "demo-patient-001",
+      "medications": [
+        {
+          "name": "Paracetamol",
+          "dosage": "500mg",
+          "frequency": "Every 6 hours",
+          "duration": "3 days",
+          "route": "Oral",
+          "instructions": "Take with food. Do not exceed 4 tablets in 24 hours.",
+          "warnings": "Do not take with other paracetamol-containing medicines. Avoid alcohol."
+        }
+      ],
+      "status": "active",
+      "created_at": "2026-10-24T10:48:00+05:30",
+      "updated_at": "2026-10-24T10:48:00+05:30"
+    }
+  ],
+  "followUps": [
+    {
+      "id": "demo-fu-001",
+      "incident_id": "demo-incident-001",
+      "patient_id": "demo-patient-001",
+      "facility_id": "demo-facility-001",
+      "facility_name": "AIIMS Delhi (Demo)",
+      "clinician_id": "demo-clinician-001",
+      "clinician_name": "Dr. Meera Reddy",
+      "department": "Orthopedic OPD",
+      "follow_up_date": "2026-10-26",
+      "follow_up_time": "10:00",
+      "purpose": "X-ray review and orthopedic evaluation of left knee",
+      "status": "scheduled",
+      "reminder_status": "scheduled",
+      "created_at": "2026-10-24T11:05:00+05:30",
+      "updated_at": "2026-10-24T11:05:00+05:30"
+    }
+  ],
+  "auditEvents": [
+    {
+      "actor_id": "::1",
+      "actor_role": "qr_scanner",
+      "event_type": "qr_accessed",
+      "resource_type": "qr_access_token",
+      "resource_id": "42087ab2fc334117943a2550df0dce82",
+      "description": "PS-40 Emergency QR Verification: Access Denied (not_found: This QR code could not be verified. It may be incorrect, expired, or no longer active.)",
+      "result": "denied",
+      "id": "cb_ug3ndfvzmvm5jwfi",
+      "created_at": "2026-10-24T08:44:04.974Z"
+    },
+    {
+      "actor_id": "::1",
+      "actor_role": "qr_scanner",
+      "event_type": "qr_accessed",
+      "resource_type": "qr_access_token",
+      "resource_id": "42087ab2fc334117943a2550df0dce82",
+      "description": "PS-40 Emergency QR Verification: Access Denied (not_found: This QR code could not be verified. It may be incorrect, expired, or no longer active.)",
+      "result": "denied",
+      "id": "cb_bja16dmtmvm5jwew",
+      "created_at": "2026-10-24T08:44:04.952Z"
+    },
+    {
+      "id": "demo-audit-001",
+      "actor_id": "demo-bystander-001",
+      "actor_role": "bystander",
+      "event_type": "incident_created",
+      "resource_type": "incident",
+      "resource_id": "demo-incident-001",
+      "description": "Emergency incident report submitted: CB-20261024-A1B2",
+      "result": "success",
+      "created_at": "2026-10-24T10:32:00+05:30"
+    }
+  ],
+  "facilities": [
+    {
+      "id": "demo-facility-001",
+      "name": "AIIMS Delhi Trauma Center",
+      "facility_type": "government",
+      "address": "Sri Aurobindo Marg, Ansari Nagar",
+      "city": "New Delhi",
+      "state": "Delhi",
+      "latitude": 28.5672,
+      "longitude": 77.21,
+      "phone": "+91-11-26588500",
+      "email": "emergency@aiims-demo.gov.in",
+      "emergency_department": true,
+      "participation_status": "demo",
+      "is_demo": true,
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-02-05T00:00:00Z"
+    },
+    {
+      "id": "demo-facility-002",
+      "name": "Safdarjung Hospital Emergency",
+      "facility_type": "government",
+      "address": "Ring Road, Opposite AIIMS",
+      "city": "New Delhi",
+      "state": "Delhi",
+      "latitude": 28.57,
+      "longitude": 77.2078,
+      "phone": "+91-11-26165060",
+      "email": "emergency@safdarjung-demo.gov.in",
+      "emergency_department": true,
+      "participation_status": "demo",
+      "is_demo": true,
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-02-05T00:00:00Z"
+    }
+  ],
+  "patientProfiles": [
+    {
+      "id": "demo-patient-001",
+      "user_id": "demo-patient-001",
+      "full_name": "Rohan Mehta",
+      "date_of_birth": "1994-05-15",
+      "blood_group": "O+",
+      "allergies": "Penicillin (Severe)",
+      "emergency_contact_name": "Kavita Mehta",
+      "emergency_contact_phone": "+91-9876543220",
+      "identity_verified": true,
+      "created_at": "2026-10-24T10:40:00+05:30",
+      "updated_at": "2026-10-24T10:40:00+05:30"
+    }
+  ]
+}

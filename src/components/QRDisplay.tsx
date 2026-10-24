@@ -12,7 +12,11 @@ import {
   XCircle, 
   Eye,
   Lock,
-  Share2
+  Share2,
+  Printer,
+  Smartphone,
+  Laptop,
+  Wifi
 } from 'lucide-react';
 import { QRAccessToken } from '@/lib/types';
 import Link from 'next/link';
@@ -27,18 +31,41 @@ export function QRDisplay({ token, onRevoke, showRevokeButton = true }: QRDispla
   const [dataUrl, setDataUrl] = useState<string>('');
   const [copied, setCopied] = useState(false);
   const [timeLeft, setTimeLeft] = useState<string>('');
+  const [urlMode, setUrlMode] = useState<'local' | 'network'>('local');
+  const [networkIp, setNetworkIp] = useState<string>('10.133.124.26');
+  const [isLocalhost, setIsLocalhost] = useState<boolean>(true);
 
-  const fullUrl = typeof window !== 'undefined' 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      setIsLocalhost(isLocal);
+      
+      // Fetch dynamic network IP
+      fetch('/api/network-ip')
+        .then(r => r.json())
+        .then(d => {
+          if (d.ip) setNetworkIp(d.ip);
+        })
+        .catch(() => {});
+    }
+  }, []);
+
+  // Compute selected URL
+  const localUrl = typeof window !== 'undefined'
     ? `${window.location.origin}/emergency-access/${token.token_hash}`
-    : `https://carebridge.ai/emergency-access/${token.token_hash}`;
+    : `http://localhost:3000/emergency-access/${token.token_hash}`;
+
+  const networkUrl = `http://${networkIp}:3000/emergency-access/${token.token_hash}`;
+
+  const effectiveUrl = (urlMode === 'network' && isLocalhost) ? networkUrl : localUrl;
 
   useEffect(() => {
     let isMounted = true;
-    QRCode.toDataURL(fullUrl, {
+    QRCode.toDataURL(effectiveUrl, {
       width: 280,
       margin: 1,
       color: {
-        dark: '#0B132B',
+        dark: '#080C14',
         light: '#FFFFFF',
       },
     })
@@ -50,7 +77,7 @@ export function QRDisplay({ token, onRevoke, showRevokeButton = true }: QRDispla
     return () => {
       isMounted = false;
     };
-  }, [fullUrl]);
+  }, [effectiveUrl]);
 
   // Expiration countdown
   useEffect(() => {
@@ -80,7 +107,7 @@ export function QRDisplay({ token, onRevoke, showRevokeButton = true }: QRDispla
   }, [token]);
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(fullUrl);
+    navigator.clipboard.writeText(effectiveUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
   };
@@ -89,22 +116,61 @@ export function QRDisplay({ token, onRevoke, showRevokeButton = true }: QRDispla
     if (!dataUrl) return;
     const a = document.createElement('a');
     a.href = dataUrl;
-    a.download = `carebridge-qr-${token.id.slice(0, 8)}.png`;
+    a.download = `carebridge-emergency-pass-${token.id.slice(0, 8)}.png`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
   };
 
+  const handlePrint = () => {
+    window.print();
+  };
+
   const isInvalid = token.status === 'expired' || token.status === 'revoked' || timeLeft === 'EXPIRED';
 
   return (
-    <div className="glass-panel rounded-2xl p-6 sm:p-7 shadow-2xl relative overflow-hidden transition-all">
+    <div className="glass-panel rounded-2xl p-6 sm:p-7 shadow-2xl relative overflow-hidden transition-all border border-white/[0.08]">
       {/* Delicate top gradient hairline */}
       <div className={`h-[2px] w-full absolute top-0 left-0 ${
         token.status === 'revoked' ? 'bg-red-500' :
         token.status === 'expired' ? 'bg-amber-500' :
         'bg-gradient-to-r from-sky-400 via-teal-400 to-emerald-400'
       }`} />
+
+      {/* Target Device Destination Mode Selector (Addresses localhost camera scan issue) */}
+      {isLocalhost && (
+        <div className="mb-5 p-2 rounded-xl bg-[#090D1A] border border-white/[0.08] flex flex-col sm:flex-row items-center justify-between gap-2.5">
+          <div className="flex items-center gap-2 text-xs">
+            <Wifi className="w-3.5 h-3.5 text-sky-400" />
+            <span className="text-slate-300 font-medium">QR Scanning Target:</span>
+          </div>
+          <div className="flex items-center gap-1.5 p-0.5 rounded-lg bg-black/40 border border-white/[0.05]">
+            <button
+              onClick={() => setUrlMode('local')}
+              className={`px-2.5 py-1 rounded-md text-[11px] font-semibold flex items-center gap-1.5 transition-all ${
+                urlMode === 'local' 
+                  ? 'bg-sky-500 text-slate-950 shadow-sm' 
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <Laptop className="w-3 h-3" />
+              This PC (localhost)
+            </button>
+            <button
+              onClick={() => setUrlMode('network')}
+              className={`px-2.5 py-1 rounded-md text-[11px] font-semibold flex items-center gap-1.5 transition-all ${
+                urlMode === 'network' 
+                  ? 'bg-emerald-400 text-slate-950 shadow-sm' 
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+              title={`Network IP: ${networkIp}:3000`}
+            >
+              <Smartphone className="w-3 h-3" />
+              Phone Wi-Fi Pass ({networkIp})
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="flex flex-col sm:flex-row items-center gap-6">
         {/* Pass-Style QR Badge Container */}
@@ -134,7 +200,7 @@ export function QRDisplay({ token, onRevoke, showRevokeButton = true }: QRDispla
         </div>
 
         {/* QR Specifications & Metadata */}
-        <div className="flex-1 space-y-3.5 text-center sm:text-left w-full">
+        <div className="flex-1 space-y-3 text-center sm:text-left w-full">
           <div>
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-1.5">
               <span className="text-[10px] font-semibold tracking-wider uppercase px-2 py-0.5 rounded-md bg-white/[0.04] text-slate-300 border border-white/[0.08]">
@@ -145,22 +211,22 @@ export function QRDisplay({ token, onRevoke, showRevokeButton = true }: QRDispla
                   ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20'
                   : 'bg-red-500/10 text-red-300 border border-red-500/20'
               }`}>
-                {token.status === 'active' && timeLeft !== 'EXPIRED' ? 'Valid & Encrypted' : token.status.toUpperCase()}
+                {token.status === 'active' && timeLeft !== 'EXPIRED' ? 'Active & Cryptographically Bound' : token.status.toUpperCase()}
               </span>
             </div>
             <h3 className="text-base font-bold text-white tracking-tight flex items-center justify-center sm:justify-start gap-2">
               <ShieldCheck className="w-4 h-4 text-sky-400" />
               Time-Limited Emergency Record Bridge
             </h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Cryptographically scoped access for first responders. Reveals triage and location data without broad health history exposure.
+            <p className="text-xs text-slate-400 leading-relaxed mt-1">
+              Provides first responders with scoped access to triage injuries and emergency vitals. Does <strong className="text-slate-300">not</strong> expose full lifetime health records.
             </p>
           </div>
 
           {/* Metadata Specs */}
           <div className="grid grid-cols-2 gap-2 text-xs bg-white/[0.02] p-3 rounded-xl border border-white/[0.06]">
             <div>
-              <span className="text-[10px] text-slate-500 block uppercase font-medium">Time Window</span>
+              <span className="text-[10px] text-slate-500 block uppercase font-medium">Valid Window</span>
               <span className="font-medium text-slate-200 flex items-center gap-1 mt-0.5">
                 <Clock className="w-3 h-3 text-amber-400" />
                 <span className={timeLeft === 'EXPIRED' || timeLeft === 'REVOKED' ? 'text-red-400 font-semibold' : 'text-slate-200'}>
@@ -171,7 +237,7 @@ export function QRDisplay({ token, onRevoke, showRevokeButton = true }: QRDispla
 
             <div>
               <span className="text-[10px] text-slate-500 block uppercase font-medium">Usage Limit</span>
-              <span className="font-medium text-slate-200 mt-0.5 block">
+              <span className="font-medium text-slate-200 mt-0.5 block font-mono">
                 {token.use_count} of {token.max_uses} scans
               </span>
             </div>
@@ -195,7 +261,7 @@ export function QRDisplay({ token, onRevoke, showRevokeButton = true }: QRDispla
               className="px-3 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-slate-200 text-xs font-medium flex items-center gap-1.5 transition-all border border-white/[0.08]"
             >
               {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-slate-400" />}
-              {copied ? 'Link Copied' : 'Copy Access Link'}
+              {copied ? 'Link Copied' : 'Copy Link'}
             </button>
 
             <button
@@ -207,18 +273,26 @@ export function QRDisplay({ token, onRevoke, showRevokeButton = true }: QRDispla
               Download PNG
             </button>
 
+            <button
+              onClick={handlePrint}
+              className="px-3 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-slate-200 text-xs font-medium flex items-center gap-1.5 transition-all border border-white/[0.08]"
+            >
+              <Printer className="w-3.5 h-3.5 text-slate-400" />
+              Print Pass
+            </button>
+
             <Link
               href={`/emergency-access/${token.token_hash}`}
               className="px-3 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm"
             >
               <Eye className="w-3.5 h-3.5" />
-              Verify View
+              Test Destination
             </Link>
 
             {showRevokeButton && token.status === 'active' && onRevoke && (
               <button
                 onClick={() => {
-                  if (confirm('Revoke this QR token immediately? Any responder scanning this code will immediately be denied access.')) {
+                  if (confirm('Revoke this emergency QR token immediately? Any responder scanning this code will immediately be denied access.')) {
                     onRevoke(token.id);
                   }
                 }}
