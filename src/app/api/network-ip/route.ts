@@ -9,6 +9,7 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({
     success: true,
     ip,
+    networkIp: ip,
     port: 3000,
     currentHost: host,
     currentOrigin: `${proto}://${host}`,

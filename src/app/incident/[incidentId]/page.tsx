@@ -36,8 +36,26 @@ export default function IncidentTrackingPage() {
   const [loading, setLoading] = useState(true);
   const [isDispatching, setIsDispatching] = useState(false);
 
-  const loadData = () => {
+  const loadData = async () => {
     if (!incidentId) return;
+    try {
+      const res = await fetch(`/api/incidents/${encodeURIComponent(incidentId)}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && data.incident) {
+          setIncident(data.incident);
+          setTokens(data.tokens || []);
+          setDispatches(data.dispatches || []);
+          setInstructions(data.careInstructions || []);
+          setPrescriptions(data.prescriptions || []);
+          setLoading(false);
+          return;
+        }
+      }
+    } catch (e) {
+      console.warn('API fetch failed, falling back to demoDB', e);
+    }
+
     const inc = demoDB.getIncident(incidentId);
     if (inc) {
       setIncident({ ...inc });
@@ -56,9 +74,18 @@ export default function IncidentTrackingPage() {
     return () => clearInterval(interval);
   }, [incidentId]);
 
-  const handleRevokeToken = (tokenId: string) => {
+  const handleRevokeToken = async (tokenId: string) => {
+    try {
+      await fetch('/api/qr/revoke', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tokenId }),
+      });
+    } catch (e) {
+      console.error('Revoke API call failed', e);
+    }
     demoDB.revokeQRToken(tokenId);
-    loadData();
+    await loadData();
   };
 
   const handleManualDispatch = async (facilityId: string) => {
@@ -119,16 +146,16 @@ export default function IncidentTrackingPage() {
             <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
               Incident {incident.incident_id}
             </h1>
+            <span className="text-[10px] uppercase font-semibold tracking-wider px-2.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 flex items-center gap-1">
+              <CheckCircle2 className="w-3 h-3 text-emerald-400" /> Persisted & Active
+            </span>
             <span className="text-[10px] uppercase font-semibold tracking-wider px-2.5 py-0.5 rounded-md bg-sky-500/10 text-sky-300 border border-sky-500/20">
               Status: {incident.status}
-            </span>
-            <span className="text-[10px] uppercase font-semibold tracking-wider px-2 py-0.5 rounded-md bg-purple-500/10 text-purple-300 border border-purple-500/20">
-              Demo Mode Active
             </span>
           </div>
           <p className="text-xs text-slate-400 mt-1 flex items-center gap-1.5">
             <Clock className="w-3.5 h-3.5 text-slate-500" />
-            Reported on {new Date(incident.incident_time).toLocaleString()}
+            Reported on {new Date(incident.incident_time || incident.created_at).toLocaleString()}
           </p>
         </div>
 
@@ -148,6 +175,49 @@ export default function IncidentTrackingPage() {
             <Hospital className="w-3.5 h-3.5 text-emerald-400" />
             <span>Open as Hospital</span>
           </Link>
+        </div>
+      </div>
+
+      {/* Guided Bystander Next-Steps Panel */}
+      <div className="p-5 rounded-2xl bg-gradient-to-r from-sky-950/40 via-[#0D1528] to-slate-900/60 border border-sky-500/20 shadow-xl backdrop-blur-md space-y-4">
+        <div className="flex items-center gap-2">
+          <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+          <h2 className="text-sm font-bold text-white tracking-wide uppercase">
+            Incident Successfully Recorded & Active
+          </h2>
+        </div>
+        <p className="text-xs text-sky-200/90 leading-relaxed">
+          &quot;Your incident has been recorded. You can now share the QR with an authorised responder. Check the hospital delivery status below.&quot;
+        </p>
+
+        {/* 3 Core Questions Breakdown */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
+          <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.06] space-y-1">
+            <span className="text-[10px] font-bold text-sky-400 uppercase tracking-wider block">
+              1. What is happening now?
+            </span>
+            <p className="text-[11.5px] text-slate-300 leading-relaxed">
+              Your report is safely persisted in the system. The ER dispatch radar is transmitting location and triage flags to nearby trauma centers.
+            </p>
+          </div>
+
+          <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.06] space-y-1">
+            <span className="text-[10px] font-bold text-amber-400 uppercase tracking-wider block">
+              2. What do you need to do?
+            </span>
+            <p className="text-[11.5px] text-slate-300 leading-relaxed">
+              Keep this screen visible, or click <strong>Download Pass</strong> or <strong>Print</strong> below. Present the QR code to arriving paramedics or triage staff.
+            </p>
+          </div>
+
+          <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.06] space-y-1">
+            <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider block">
+              3. What happens next?
+            </span>
+            <p className="text-[11.5px] text-slate-300 leading-relaxed">
+              When scanned, access is logged. Clinicians review incoming vitals, accept the case, and post verified AI-simplified guidance right to this timeline.
+            </p>
+          </div>
         </div>
       </div>
 

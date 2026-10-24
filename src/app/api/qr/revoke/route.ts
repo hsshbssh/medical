@@ -14,12 +14,11 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { tokenId, tokenHash } = body;
-    const target = (tokenId || tokenHash || '').trim();
+    const target = (body.token || body.tokenId || body.tokenHash || '').trim();
 
     if (!target) {
       return NextResponse.json(
-        { success: false, error: 'tokenId or tokenHash is required to revoke.' },
+        { success: false, error: 'token, tokenId, or tokenHash is required to revoke.' },
         { status: 400 }
       );
     }

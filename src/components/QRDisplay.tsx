@@ -36,18 +36,22 @@ export function QRDisplay({ token, onRevoke, showRevokeButton = true }: QRDispla
   const [isLocalhost, setIsLocalhost] = useState<boolean>(true);
 
   useEffect(() => {
+    let ignore = false;
     if (typeof window !== 'undefined') {
       const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-      setIsLocalhost(isLocal);
+      setIsLocalhost(prev => (prev !== isLocal ? isLocal : prev));
       
       // Fetch dynamic network IP
       fetch('/api/network-ip')
         .then(r => r.json())
         .then(d => {
-          if (d.ip) setNetworkIp(d.ip);
+          if (!ignore && d.ip) setNetworkIp(d.ip);
         })
         .catch(() => {});
     }
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   // Compute selected URL

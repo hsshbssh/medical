@@ -28,7 +28,30 @@ export default function HospitalDashboardPage() {
   const [filter, setFilter] = useState<'all' | 'pending' | 'acknowledged' | 'accepted'>('all');
   const [selectedIncident, setSelectedIncident] = useState<Incident | null>(null);
 
-  const loadData = () => {
+  const loadData = async () => {
+    try {
+      const res = await fetch('/api/incidents');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && data.incidents) {
+          data.incidents.forEach((inc: Incident) => {
+            if (!demoDB.getIncident(inc.id)) {
+              demoDB.incidents.unshift(inc);
+            }
+          });
+          if (data.dispatches) {
+            data.dispatches.forEach((d: HospitalDispatch) => {
+              if (!demoDB.dispatches.find(item => item.id === d.id)) {
+                demoDB.dispatches.unshift(d);
+              }
+            });
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('API fetch incidents failed, using demoDB', e);
+    }
+
     const allDispatches = demoDB.dispatches;
     const allIncidents = demoDB.getAllIncidents();
     setDispatches([...allDispatches]);

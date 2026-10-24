@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
 import { 
   Activity, 
@@ -23,13 +24,25 @@ import {
   FileText,
   Clock,
   Compass,
-  UserCheck
+  UserCheck,
+  PhoneCall,
+  Search
 } from 'lucide-react';
 import { UserRole } from '@/lib/types';
 
 export default function HomePage() {
+  const router = useRouter();
   const { switchRole } = useAuth();
   const [activeStage, setActiveStage] = useState<number>(1);
+  const [trackId, setTrackId] = useState('');
+  const [showTrackInput, setShowTrackInput] = useState(false);
+
+  const handleTrackSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (trackId.trim()) {
+      router.push(`/incident/${encodeURIComponent(trackId.trim())}`);
+    }
+  };
 
   const stages = [
     {
@@ -100,10 +113,34 @@ export default function HomePage() {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-3xl mx-auto text-center space-y-6">
+            {/* Prominent Emergency Assistance Option */}
+            <div className="p-3.5 rounded-2xl bg-red-950/40 border border-red-900/60 text-xs text-red-200 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-lg shadow-red-950/30 backdrop-blur-md">
+              <div className="flex items-center gap-2 text-left">
+                <AlertTriangle className="w-4 h-4 text-red-400 shrink-0" />
+                <span className="text-[11.5px] text-red-200/90 leading-tight">
+                  <strong className="text-white">Life-Threatening Emergency?</strong> Submitting a report does not delay or replace contacting emergency services.
+                </span>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <a
+                  href="tel:112"
+                  className="px-3 py-1 rounded-lg bg-red-600 hover:bg-red-500 text-white font-bold text-xs flex items-center gap-1 shadow-sm transition-colors"
+                >
+                  <PhoneCall className="w-3 h-3 fill-current" /> Call 112
+                </a>
+                <a
+                  href="tel:108"
+                  className="px-3 py-1 rounded-lg bg-white/10 hover:bg-white/15 text-white font-medium text-xs transition-colors border border-white/10"
+                >
+                  Ambulance 108
+                </a>
+              </div>
+            </div>
+
             {/* System Status Pill */}
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs text-slate-300 shadow-sm backdrop-blur-md">
               <span className="w-2 h-2 rounded-full bg-emerald-400 ring-2 ring-emerald-400/20 animate-pulse" />
-              <span className="font-semibold text-slate-200">Unified Healthcare Continuity System</span>
+              <span className="font-semibold text-slate-200">Unified Healthcare Coordination Platform</span>
               <span className="text-slate-500">•</span>
               <span className="text-[11px] text-sky-400 font-mono font-medium">PS-40 + PS-39 + PS-35</span>
             </div>
@@ -114,30 +151,72 @@ export default function HomePage() {
               <span className="text-sky-400 font-extrabold">To Continuous Recovery</span>
             </h1>
 
-            {/* Sub-headline */}
-            <p className="text-base sm:text-lg text-slate-300/90 font-normal leading-relaxed max-w-2xl mx-auto">
-              A clinical-grade emergency platform connecting scene reporting, time-limited QR access tokens, ER reception triage, plain-language AI care instructions, and post-discharge continuity.
+            {/* Required Bystander Guidance Subtitle */}
+            <p className="text-base sm:text-lg text-slate-200 font-medium leading-relaxed max-w-2xl mx-auto">
+              Report an accident and share essential incident information with participating emergency facilities.
+            </p>
+            <p className="text-xs sm:text-sm text-slate-400 font-normal leading-relaxed max-w-2xl mx-auto">
+              Generates a 24-hour cryptographic QR pass for responding paramedics, alerts nearby trauma centers with GPS triage telemetry, and tracks your patient journey from acute admission to discharge.
             </p>
 
-            {/* Action Bar */}
+            {/* Two Clear Bystander Actions */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
               <Link
                 href="/report-emergency"
-                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-semibold text-xs tracking-wider uppercase flex items-center justify-center gap-2 shadow-lg shadow-rose-950/40 transition-all hover:translate-y-[-1px] active:translate-y-0"
+                className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs tracking-wider uppercase flex items-center justify-center gap-2 shadow-xl shadow-rose-950/50 transition-all hover:translate-y-[-1px] active:translate-y-0"
               >
                 <Activity className="w-4 h-4" />
-                Report Emergency Incident
+                Report an Emergency
                 <ArrowRight className="w-3.5 h-3.5 opacity-80" />
               </Link>
 
-              <Link
-                href="/incident/demo-incident-001"
-                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#0D1322] hover:bg-[#131B30] border border-white/[0.1] text-slate-200 font-medium text-xs tracking-wide flex items-center justify-center gap-2 transition-all hover:translate-y-[-1px]"
+              <button
+                onClick={() => setShowTrackInput(!showTrackInput)}
+                className={`w-full sm:w-auto px-6 py-3.5 rounded-xl border font-semibold text-xs tracking-wide flex items-center justify-center gap-2 transition-all hover:translate-y-[-1px] ${
+                  showTrackInput 
+                    ? 'bg-sky-500/20 border-sky-400/40 text-white shadow-lg shadow-sky-500/10' 
+                    : 'bg-[#0D1322] hover:bg-[#131B30] border-white/[0.1] text-slate-200'
+                }`}
               >
-                <QrCode className="w-4 h-4 text-sky-400" />
-                Inspect Active Patient File (INC-8821)
-              </Link>
+                <Search className="w-4 h-4 text-sky-400" />
+                Track an Existing Incident
+              </button>
             </div>
+
+            {/* Inline Incident Tracker Panel */}
+            {showTrackInput && (
+              <form onSubmit={handleTrackSubmit} className="max-w-md mx-auto p-4 rounded-2xl bg-[#090E1D] border border-sky-500/30 shadow-2xl space-y-3 animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-semibold text-white flex items-center gap-1.5">
+                    <QrCode className="w-3.5 h-3.5 text-sky-400" /> Enter Incident ID or Code
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setTrackId('demo-incident-001')}
+                    className="text-[11px] text-sky-400 hover:text-sky-300 underline font-mono"
+                  >
+                    Use Sample ID
+                  </button>
+                </div>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={trackId}
+                    onChange={(e) => setTrackId(e.target.value)}
+                    placeholder="e.g. CB-20261024-A1B2 or demo-incident-001"
+                    className="flex-1 px-3.5 py-2.5 rounded-xl bg-black/50 border border-white/10 text-white text-xs placeholder:text-slate-500 focus:outline-none focus:border-sky-500 font-mono"
+                    autoFocus
+                  />
+                  <button
+                    type="submit"
+                    disabled={!trackId.trim()}
+                    className="px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 disabled:opacity-40 text-white text-xs font-semibold flex items-center gap-1 transition-colors"
+                  >
+                    Track <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </form>
+            )}
 
             {/* Architecture Metrics Strip */}
             <div className="pt-6 grid grid-cols-2 md:grid-cols-4 gap-3 max-w-3xl mx-auto text-left">

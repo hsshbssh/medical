@@ -162,9 +162,11 @@ export async function POST(req: NextRequest) {
 export async function GET(req: NextRequest) {
   try {
     const incidents = serverDB.getAllIncidents();
+    const dispatches = serverDB.getAllDispatches();
     return NextResponse.json({
       success: true,
       incidents,
+      dispatches,
       total: incidents.length,
     });
   } catch (err: any) {

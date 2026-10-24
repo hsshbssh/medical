@@ -5,12 +5,13 @@
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
+import crypto from 'crypto';
 import type {
-  Incident, IncidentAttachment, QRAccessToken, QRAccessLog,
+  Incident, QRAccessToken,
   HospitalFacility, HospitalDispatch, ClinicianResponse,
   CareInstruction, Prescription, FollowUp, AuditEvent,
-  Notification, ConsentRecord, PatientProfile,
-  IncidentStatus, DispatchStatus, FollowUpStatus, TokenStatus,
+  PatientProfile,
+  IncidentStatus, FollowUpStatus, DispatchStatus,
 } from './types';
 
 import {
@@ -47,7 +48,6 @@ function generateIncidentId(): string {
 }
 
 export function generateCryptoToken(): string {
-  const crypto = require('crypto');
   return crypto.randomBytes(32).toString('hex');
 }
 
@@ -209,7 +209,7 @@ function getInitialSeedData(): StoreData {
             warnings: 'Do not take with other paracetamol-containing medicines. Avoid alcohol.',
           },
         ],
-        status: 'active',
+        status: 'issued',
         created_at: '2026-10-24T10:48:00+05:30',
         updated_at: '2026-10-24T10:48:00+05:30',
       },
@@ -219,16 +219,14 @@ function getInitialSeedData(): StoreData {
         id: 'demo-fu-001',
         incident_id: 'demo-incident-001',
         patient_id: 'demo-patient-001',
-        facility_id: 'demo-facility-001',
-        facility_name: 'AIIMS Delhi (Demo)',
         clinician_id: 'demo-clinician-001',
-        clinician_name: 'Dr. Meera Reddy',
-        department: 'Orthopedic OPD',
+        care_team_member_id: 'demo-careteam-001',
         follow_up_date: '2026-10-26',
         follow_up_time: '10:00',
         purpose: 'X-ray review and orthopedic evaluation of left knee',
+        instructions: 'AIIMS Delhi Orthopedic OPD with Dr. Meera Reddy. Bring prior reports.',
         status: 'scheduled',
-        reminder_status: 'scheduled',
+        reminder_status: 'pending',
         created_at: '2026-10-24T11:05:00+05:30',
         updated_at: '2026-10-24T11:05:00+05:30',
       },
@@ -494,6 +492,10 @@ class ServerStore {
     this.data.dispatches.unshift(dispatch);
     this.writeToDisk();
     return dispatch;
+  }
+
+  getAllDispatches(): HospitalDispatch[] {
+    return [...this.data.dispatches];
   }
 
   getDispatchesByIncident(incidentId: string): HospitalDispatch[] {

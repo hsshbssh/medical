@@ -132,7 +132,7 @@ function generateDeterministicClinicalDraft(source: string): SimplifyInstruction
     else if (/wound|clean|dress|ice|bandage|splint/i.test(line)) category = 'Wound Care';
 
     // Simple plain English transformation
-    let plain = line
+    const plain = line
       .replace(/^[\d\.\-\*]+\s*/, '')
       .replace(/\bPO\b/gi, '(by mouth)')
       .replace(/\bPRN\b/gi, 'as needed')
